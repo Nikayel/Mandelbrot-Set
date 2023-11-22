@@ -1,7 +1,12 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp> // Include the audio library (not implemented yet)
 #include <cmath>
 #include <vector>
 #include <iostream>
+#include <sstream>
+
+using namespace std; // Use the std namespace
+
 class ComplexPlane : public sf::Drawable
 {
 public:

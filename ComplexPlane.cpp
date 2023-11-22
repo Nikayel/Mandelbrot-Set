@@ -1,4 +1,3 @@
-// ComplexPlane.cpp
 #include "ComplexPlane.h"
 #include <cmath> // for pow function
 

@@ -75,6 +75,12 @@ int main()
         complexPlane.updateRender();
         complexPlane.loadText(text);
 
+        // Currect mouse position
+        sf::Vector2f mouseCoords = complexPlane.getMouseLocation();
+        std::stringstream mousePos;
+        mousePos << "Mouse Position: (" << mouseCoords.x << ", " << mouseCoords.y << ")";
+        text.setString(mousePos.str());
+
         // Draw Scene segment
         window.clear();
         window.draw(complexPlane);
