@@ -25,8 +25,19 @@ void ComplexPlane::updateRender()
         {
             for (int j = 0; j < m_pixelWidth; j++)
             {
+                m_vArray[j + i * m_pixelWidth].position = {(float)j, (float)i};
+                Vector2f coordinate = mapPixelToCoords({j, i});
+                size_t count = countIterations(coordinate);
+
+                Uint8 r;
+                Uint8 g;
+                Uint8 b;
+
+                iterationsToRGB(count, r, g, b);
+                m_vArray[j + i * m_pixelWidth].color = {r, g, b};
             }
         }
+        m_state = State::DISPLAYING;
     }
 }
 void ComplexPlane::zoomIn()
@@ -72,6 +83,95 @@ int ComplexPlane::countIterations(Vector2f coord)
 }
 void ComplexPlane::iterationsToRGB(size_t count, Uint8 &r, Uint8 &g, Uint8 &b)
 {
+    // Define constants mapping the colors
+    const size_t colorRegionCount = 5;
+    const size_t colorRegionSize = MAX_ITER / colorRegionCount;
+
+    // Color for MAX_ITER
+    if (count == MAX_ITER)
+    {
+        r = 0;
+        g = 0;
+        b = 0;
+    }
+    // will technicly be black if everything goes to zero
+    else
+    {
+        // Determine the color region for the given iteration count
+        size_t region = count / colorRegionSize;
+
+        // Calculate a smooth color gradient within the region
+        size_t regionIteration = count % colorRegionSize;
+        float colorFactor = static_cast<float>(regionIteration) / colorRegionSize;
+
+        // Define HSV values for different regions
+        float hue = 0.0; // Default hue for low iteration counts
+
+        // Adjust hue for different regions
+        switch (region)
+        {
+        case 1:
+            hue = 240.0;
+            break;
+        case 2:
+            hue = 180.0;
+            break;
+        case 3:
+            hue = 120.0;
+            break;
+        case 4:
+            hue = 60.0;
+            break;
+        }
+        // I put default as red
+
+        // Converting HSV to RGB
+        float c = 1.0;
+        float x = (1.0 - std::abs(std::fmod(hue / 60.0, 2.0) - 1.0)) * c;
+        float m = 0.0;
+
+        if (hue >= 0.0 && hue < 60.0)
+        {
+            r = static_cast<Uint8>((c + m) * 255);
+            g = static_cast<Uint8>((x + m) * 255);
+            b = static_cast<Uint8>((m) * 255);
+        }
+        else if (hue >= 60.0 && hue < 120.0)
+        {
+            r = static_cast<Uint8>((x + m) * 255);
+            g = static_cast<Uint8>((c + m) * 255);
+            b = static_cast<Uint8>((m) * 255);
+        }
+        else if (hue >= 120.0 && hue < 180.0)
+        {
+            r = static_cast<Uint8>((m) * 255);
+            g = static_cast<Uint8>((c + m) * 255);
+            b = static_cast<Uint8>((x + m) * 255);
+        }
+        else if (hue >= 180.0 && hue < 240.0)
+        {
+            r = static_cast<Uint8>((m) * 255);
+            g = static_cast<Uint8>((x + m) * 255);
+            b = static_cast<Uint8>((c + m) * 255);
+        }
+        else if (hue >= 240.0 && hue < 300.0)
+        {
+            r = static_cast<Uint8>((x + m) * 255);
+            g = static_cast<Uint8>((m) * 255);
+            b = static_cast<Uint8>((c + m) * 255);
+        }
+        else
+        {
+            r = static_cast<Uint8>((c + m) * 255);
+            g = static_cast<Uint8>((m) * 255);
+            b = static_cast<Uint8>((x + m) * 255);
+        }
+
+        // Adjusting the color based on the color factor within the region
+        r = static_cast<Uint8>((r * (1.0 - colorFactor)) + (255 * colorFactor));
+        g = static_cast<Uint8>((g * (1.0 - colorFactor)) + (255 * colorFactor));
+        b = static_cast<Uint8>((b * (1.0 - colorFactor)) + (255 * colorFactor));
+    }
 }
 Vector2f ComplexPlane::mapPixelToCoords(Vector2i mousePixel)
 {
