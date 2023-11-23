@@ -47,12 +47,24 @@ void ComplexPlane::zoomOut()
 }
 void ComplexPlane::setCenter(Vector2i mousePixel)
 {
+    Vector2f newCenter = mapPixelToCoords(mousePixel);
+    m_plane_center = newCenter;
+    m_state = State::CALCULATING;
 }
 void ComplexPlane::setMouseLocation(Vector2i mousPixel)
 {
+    m_mouseLocation = mapPixelToCoords(mousePixel);
 }
 void ComplexPlane::loadText(Text &text)
 {
+    text.setString("Hello, World!");
+    text.setPosition(10.0f, 10.0f);
+    // or
+    //  stringstream ss;
+    //  ss << "Zoom Count: " << m_ZoomCount << "\n";
+    //  ss << "Center: (" << m_plane_center.x << ", " << m_plane_center.y << ")\n";
+    //  ss << "Mouse Location: (" << m_mouseLocation.x << ", " << m_mouseLocation.y << ")\n";
+    //  text.setString(ss.str());
 }
 int ComplexPlane::countIterations(Vector2f coord)
 {
