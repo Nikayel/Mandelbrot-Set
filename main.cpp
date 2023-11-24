@@ -3,68 +3,74 @@
 #include "ComplexPlane.h"
 
 using namespace std;
+using namespace sf;
 
 int main()
 {
     // Get desktop resolution
-    int desktopWidth = sf::VideoMode::getDesktopMode().width;
-    int desktopHeight = sf::VideoMode::getDesktopMode().height;
+    int desktopWidth = VideoMode::getDesktopMode().width;
+    int desktopHeight = VideoMode::getDesktopMode().height;
 
     // Divide by 2 for a smaller screen
     int screenWidth = desktopWidth / 2;
     int screenHeight = desktopHeight / 2;
 
     // Construct RenderWindow
-    sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Mandelbrot Set");
+    RenderWindow window(VideoMode(screenWidth, screenHeight), "Mandelbrot Set");
 
     // Construct ComplexPlane
     ComplexPlane complexPlane(screenWidth, screenHeight);
 
     // Construct Font and Text objects
-    sf::Font font;
+    Font font;
     if (!font.loadFromFile("arial.ttf"))
     {
         // Handle font loading error
+        cerr << "Error loading font file." << endl;
         return -1;
     }
-    sf::Text text("", font, 16);
+    Text text("", font, 16);
     text.setPosition(10, 10);
 
     // Begin the main loop
     while (window.isOpen())
     {
         // Handle Input segment
-        sf::Event event;
+        Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == Event::Closed)
             {
                 // Handle window close event
                 window.close();
             }
-            else if (event.type == sf::Event::MouseButtonPressed)
+            else if (event.type == Event::MouseButtonPressed)
             {
-                if (event.mouseButton.button == sf::Mouse::Right)
+                if (event.mouseButton.button == Mouse::Right)
                 {
                     // Right-click to zoom out
                     complexPlane.zoomOut();
-                    complexPlane.setCenter(sf::Mouse::getPosition(window));
+                    complexPlane.setCenter(Mouse::getPosition(window));
+                    if (complexPlane.getState() == ComplexPlane::State::DISPLAYING)
+                        complexPlane.setState(ComplexPlane::State::CALCULATING);
                 }
-                else if (event.mouseButton.button == sf::Mouse::Left)
+                else if (event.mouseButton.button == Mouse::Left)
                 {
                     // Left-click to zoom in
                     complexPlane.zoomIn();
-                    complexPlane.setCenter(sf::Mouse::getPosition(window));
+                    complexPlane.setCenter(Mouse::getPosition(window));
+                    if (complexPlane.getState() == ComplexPlane::State::DISPLAYING)
+                        complexPlane.setState(ComplexPlane::State::CALCULATING);
                 }
-                complexPlane.setState(ComplexPlane::State::CALCULATING);
             }
-            else if (event.type == sf::Event::MouseMoved)
+            else if (event.type == Event::MouseMoved)
             {
                 // Set mouse location for display
-                complexPlane.setMouseLocation(sf::Mouse::getPosition(window));
-                complexPlane.setState(ComplexPlane::State::CALCULATING);
+                complexPlane.setMouseLocation(Mouse::getPosition(window));
+                if (complexPlane.getState() == ComplexPlane::State::DISPLAYING)
+                    complexPlane.setState(ComplexPlane::State::CALCULATING);
             }
-            else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+            else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
             {
                 // Close the window on escape key press
                 window.close();
@@ -75,9 +81,9 @@ int main()
         complexPlane.updateRender();
         complexPlane.loadText(text);
 
-        // Currect mouse position
-        sf::Vector2f mouseCoords = complexPlane.getMouseLocation();
-        std::stringstream mousePos;
+        // Current mouse position
+        Vector2f mouseCoords = complexPlane.getMouseLocation();
+        stringstream mousePos;
         mousePos << "Mouse Position: (" << mouseCoords.x << ", " << mouseCoords.y << ")";
         text.setString(mousePos.str());
 

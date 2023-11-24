@@ -3,6 +3,7 @@
 #define COMPLEXPLANE_H
 
 #include <SFML/Graphics.hpp>
+
 using namespace sf;
 
 const unsigned int MAX_ITER = 64;
