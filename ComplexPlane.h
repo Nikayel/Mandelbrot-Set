@@ -29,6 +29,9 @@ public:
     void setMouseLocation(Vector2i mousPixel);
     void loadText(Text &text);
 
+    State getState() const { return m_state; }
+    void setState(State state) { m_state = state; }
+
 private:
     float m_aspectRatio;
     int m_ZoomCount;
