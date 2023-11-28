@@ -84,13 +84,11 @@ void ComplexPlane::loadText(Text &text)
 
 int ComplexPlane::countIterations(Vector2f coord)
 {
-    // Implement your iteration counting logic here
     return 0;
 }
 
 void ComplexPlane::iterationsToRGB(size_t count, Uint8 &r, Uint8 &g, Uint8 &b)
 {
-    // Implement your color mapping logic here
 }
 
 Vector2f ComplexPlane::mapPixelToCoords(Vector2i mousePixel)
