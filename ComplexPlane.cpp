@@ -62,7 +62,7 @@ void ComplexPlane::setCenter(Vector2i mousePixel)
     m_plane_center = newCenter;
     m_state = State::CALCULATING;
 }
-void ComplexPlane::setMouseLocation(Vector2i mousPixel)
+void ComplexPlane::setMouseLocation(Vector2i mousePixel)
 {
     m_mouseLocation = mapPixelToCoords(mousePixel);
 }

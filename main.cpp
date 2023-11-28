@@ -82,10 +82,10 @@ int main()
         complexPlane.loadText(text);
 
         // Current mouse position
-        Vector2f mouseCoords = complexPlane.getMouseLocation();
-        stringstream mousePos;
-        mousePos << "Mouse Position: (" << mouseCoords.x << ", " << mouseCoords.y << ")";
-        text.setString(mousePos.str());
+        //Vector2f mouseCoords = complexPlane.getMouseLocation();
+        //stringstream mousePos;
+        //mousePos << "Mouse Position: (" << mouseCoords.x << ", " << mouseCoords.y << ")";
+        //text.setString(mousePos.str());
 
         // Draw Scene segment
         window.clear();
